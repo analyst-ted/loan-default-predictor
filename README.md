@@ -1,5 +1,7 @@
 # Startup Loan Default Prediction Pipeline
 
+🚀 **[Click here to use the Live AI Web Application](https://loan-default-predictor-8yypr4sutjtlqplpwfntoh.streamlit.app/)**
+
 ## What This Is
 
 I built this to solve a real problem — most loan default models are trained to look good on paper (high accuracy) while completely missing the defaults that actually cost money. This pipeline fixes that.
