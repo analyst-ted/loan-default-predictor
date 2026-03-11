@@ -1,6 +1,6 @@
 # Startup Loan Default Prediction Pipeline
 
-🚀 **[Click here to use the Live AI Web Application](https://loan-default-predictor-8yypr4sutjtlqplpwfntoh.streamlit.app/)**
+🚀 **[Click here to use the Live AI Web Application](https://loan-default-predictor-kq2w7yqgdmwksy5ssk6cry.streamlit.app/)**
 
 ## What This Is
 
