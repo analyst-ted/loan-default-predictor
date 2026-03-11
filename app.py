@@ -15,7 +15,11 @@ st.write("Enter the applicant's financial details below to predict default risk.
 def load_assets():
     model = tf.keras.models.load_model('loan_model.keras')
     scaler = joblib.load('scaler.pkl')
-    return model, scaler
+    baselines = joblib.load('baselines.pkl')
+    return model, scaler, baselines
+
+model, scaler, baselines = load_assets()
+expected_columns = scaler.feature_names_in_
 
 model, scaler = load_assets()
 # The magic blueprint: exact 71 columns the model expects
@@ -42,36 +46,33 @@ with col2:
 st.markdown("---")
 if st.button("Run AI Prediction", type="primary"):
     
-    # 1. Create a blank dictionary with all 71 columns set to 0.0
-    input_dict = {col: 0.0 for col in expected_columns}
+    # 1. Start with the "Average Joe" baseline instead of zeros
+    input_dict = baselines.to_dict()
     
-    # 2. Fill in the numerical values the user typed
-    # (Make sure these names exactly match your original CSV column names!)
+    # 2. OVERWRITE the baseline with the specific numbers the user typed
     if 'loan_amnt' in input_dict: input_dict['loan_amnt'] = loan_amnt
     if 'int_rate' in input_dict: input_dict['int_rate'] = int_rate
     if 'annual_inc' in input_dict: input_dict['annual_inc'] = annual_inc
     if 'emp_length' in input_dict: input_dict['emp_length'] = emp_length
     
-    # 3. Flip the switch (set to 1.0) for the dropdown categories they selected
-    # Example: If they chose RENT, we look for 'home_ownership_RENT'
-    if f'home_ownership_{home_ownership}' in input_dict:
-        input_dict[f'home_ownership_{home_ownership}'] = 1.0
+    # 3. OVERWRITE the categorical dropdowns
+    # First, zero out all the other home_ownership and purpose columns so they don't overlap with the baseline
+    for col in expected_columns:
+        if col.startswith('home_ownership_') or col.startswith('purpose_') or col.startswith('sub_grade_'):
+            input_dict[col] = 0.0
+            
+    # Then flip the switch for the specific ones the user chose
+    if f'home_ownership_{home_ownership}' in input_dict: input_dict[f'home_ownership_{home_ownership}'] = 1.0
+    if f'purpose_{purpose}' in input_dict: input_dict[f'purpose_{purpose}'] = 1.0
+    if f'sub_grade_{sub_grade}' in input_dict: input_dict[f'sub_grade_{sub_grade}'] = 1.0
         
-    if f'purpose_{purpose}' in input_dict:
-        input_dict[f'purpose_{purpose}'] = 1.0
-        
-    if f'sub_grade_{sub_grade}' in input_dict:
-        input_dict[f'sub_grade_{sub_grade}'] = 1.0
-        
-    # 4. Convert the dictionary into a DataFrame with exactly 1 row
+    # 4. Convert, Scale, and Predict
     input_df = pd.DataFrame([input_dict])
-    
-    # 5. Scale it and Predict!
     scaled_input = scaler.transform(input_df)
-    prediction_prob = model.predict(scaled_input)[0][0] # Get the raw probability
+    prediction_prob = model.predict(scaled_input)[0][0]
     
-    # 6. Apply the threshold you discovered earlier!
-    threshold = 0.60
+    # 5. Apply the tuned threshold
+    threshold = 0.50 # Keeping it balanced!
     
     st.subheader("AI Decision:")
     if prediction_prob >= threshold:

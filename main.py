@@ -1,6 +1,7 @@
 from src.data_processing import load_data, check_missing_values, fill_mort_acc, final_clean, prepare_features
 from src.model import split_and_scale, build_model, evaluate_model
 import joblib
+import numpy as np
 
 # 1.Path to dataset
 data_path = '/Users/aruproy/Documents/projects/loan_default_project/data/lending_club_loan_two.csv'
@@ -50,9 +51,13 @@ evaluate_model(model,X_test,y_test)
 print("\nSaving model and scaler for deployment...")
 
 # Save the Keras Deep Learning Model
-model.save('loan_model.keras')
+print("\nSaving model, scaler, and baselines for deployment...")
 
-# Save the Scikit-Learn Scaler
+model.save('loan_model.keras')
 joblib.dump(scaler, 'scaler.pkl')
+
+# NEW: Calculate the median of every column and save it as our baseline blueprint
+baselines = np.median(X_train) 
+joblib.dump(baselines, 'baselines.pkl')
 
 print("Assets saved successfully! Ready for web deployment.")
