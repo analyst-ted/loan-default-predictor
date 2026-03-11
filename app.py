@@ -21,7 +21,7 @@ def load_assets():
 model, scaler, baselines = load_assets()
 expected_columns = scaler.feature_names_in_
 
-model, scaler = load_assets()
+model, scaler, baseline = load_assets()
 # The magic blueprint: exact 71 columns the model expects
 expected_columns = scaler.feature_names_in_ 
 
