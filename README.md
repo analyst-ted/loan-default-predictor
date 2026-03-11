@@ -57,6 +57,6 @@ python main.py
 | Threshold | Accuracy | Default Recall | Notes |
 |-----------|----------|----------------|-------|
 | 0.50 (baseline) | 80% | ~2% | Looks fine, catches nothing |
-| 0.60 (tuned) | — | **84%** | Protects principal, rejects some viable loans |
+| 0.60 (tuned) | 49% | **84%** | Protects principal, rejects some viable loans |
 
 The right threshold depends on your portfolio. That's why it's configurable.
