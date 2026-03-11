@@ -2,6 +2,7 @@ from src.data_processing import load_data, check_missing_values, fill_mort_acc, 
 from src.model import split_and_scale, build_model, evaluate_model
 import joblib
 import numpy as np
+import pandas as pd
 
 # 1.Path to dataset
 data_path = '/Users/aruproy/Documents/projects/loan_default_project/data/lending_club_loan_two.csv'
@@ -57,7 +58,8 @@ model.save('loan_model.keras')
 joblib.dump(scaler, 'scaler.pkl')
 
 # NEW: Calculate the median of every column and save it as our baseline blueprint
-baselines = np.median(X_train) 
+baselines = pd.Series(np.median(X_train, axis=0), index=scaler.feature_names_in_) 
+print(baselines)
 joblib.dump(baselines, 'baselines.pkl')
 
 print("Assets saved successfully! Ready for web deployment.")
