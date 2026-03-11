@@ -29,7 +29,7 @@ def split_and_scale(df):
     print(f"Training Features Shape: {X_train.shape}")
     print(f"Testing Features Shape: {X_test.shape}")
 
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, scaler
 
 
 # 2. Training the model
@@ -78,8 +78,8 @@ def evaluate_model(model, X_test, y_test):
 
     # 2. Convert probabilities to absolute 0 and 1
     # predictions = np.round(predictions).astype(int)
-    # predictions = (predictions>=0.60).astype(int)
-    predictions = (predictions>=0.70).astype(int)
+    predictions = (predictions>=0.60).astype(int)
+    # predictions = (predictions>=0.70).astype(int)
 
     # 3. print business reports
     print('\n--- Classification Report ---')
