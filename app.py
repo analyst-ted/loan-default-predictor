@@ -21,10 +21,6 @@ def load_assets():
 model, scaler, baselines = load_assets()
 expected_columns = scaler.feature_names_in_
 
-model, scaler, baseline = load_assets()
-# The magic blueprint: exact 71 columns the model expects
-expected_columns = scaler.feature_names_in_ 
-
 # --- 3. BUILD THE USER INTERFACE ---
 st.header("Applicant Profile")
 
@@ -71,11 +67,15 @@ if st.button("Run AI Prediction", type="primary"):
     scaled_input = scaler.transform(input_df)
     prediction_prob = model.predict(scaled_input)[0][0]
     
-    # 5. Apply the tuned threshold
-    threshold = 0.50 # Keeping it balanced!
+    # 5. Display result (model outputs REPAYMENT probability, 1 = Fully Paid)
     
+    default_prob = 1 - prediction_prob
+    threshold = 0.60
+
     st.subheader("AI Decision:")
     if prediction_prob >= threshold:
-        st.success(f"✅ APPROVED. The AI is {prediction_prob*100:.1f}% confident this loan will be fully paid.")
+        st.success(f"✅ APPROVED — {prediction_prob*100:.1f}% probability of full repayment.")
     else:
-        st.error(f"❌ REJECTED. The AI is only {prediction_prob*100:.1f}% confident. High risk of default.")
+        st.error(f"❌ REJECTED — {default_prob*100:.1f}% probability of default.")
+
+    st.caption(f"Raw repayment probability: {prediction_prob:.4f} | Threshold: {threshold}")
